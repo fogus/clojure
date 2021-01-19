@@ -723,6 +723,18 @@
          ai3 ao3
          ai4 ao4)))
 
+(deftest test-lifted-map-destructuring
+  (let [sample-map {:a 1 :b 2}
+        {:keys [a] :as m} (list sample-map)
+        add  (fn [& {:keys [a b]}] (+ a b))
+        addn (fn [n & {:keys [a b]}] (+ n a b))]
+    (is (= m sample-map))
+    (is (= a 1))
+    (is (= 3 (add  :a 1 :b 2)))
+    (is (= 3 (add  {:a 1 :b 2})))
+    (is (= 13 (addn 10 :a 1 :b 2)))
+    (is (= 13 (addn 10 {:a 1 :b 2})))))
+
 (deftest test-map-entry?
   (testing "map-entry? = false"
     (are [entry]
