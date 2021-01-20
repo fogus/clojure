@@ -723,6 +723,32 @@
          ai3 ao3
          ai4 ao4)))
 
+(deftest test-lifted-map-destructuring
+  (let [sample-map {:a 1 :b 2}
+        {:keys [a] :as m} (list sample-map)
+        add  (fn [& {:keys [a b]}] (+ a b))
+        addn (fn [n & {:keys [a b]}] (+ n a b))]
+    (is (= m sample-map))
+    (is (= a 1))
+    (testing "that kwargs are applied properly given a map in place of the key/val pairs"
+      (is (= 3 (add  :a 1 :b 2)))
+      (is (= 3 (add  {:a 1 :b 2})))
+      (is (= 13 (addn 10 :a 1 :b 2)))
+      (is (= 13 (addn 10 {:a 1 :b 2}))))
+    (testing "nested case"
+      (let [multiplayer-game-state
+            {:joe {:class "Ranger"
+                   :weapon "Longbow"
+                   :score 100}
+             :jane {:class "Knight"
+                    :weapon "Greatsword"
+                    :score 140}
+             :ryan {:class "Wizard"
+                    :weapon "Mystic Staff"
+                    :score 150}}
+            {{:keys [class weapon]} :joe} (list multiplayer-game-state)]
+        (is (= ["Ranger" "Longbow"] [class weapon]))))))
+
 (deftest test-map-entry?
   (testing "map-entry? = false"
     (are [entry]
