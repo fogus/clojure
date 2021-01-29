@@ -74,7 +74,18 @@ static public PersistentHashMap create(ISeq items){
 	for(; items != null; items = items.next().next())
 		{
 		if(items.next() == null)
-			throw new IllegalArgumentException(String.format("No value supplied for key: %s", items.first()));
+                        {
+			    if(items.first() instanceof Map)  // != null
+                                {
+				    for(Object o : ((Map)items.first()).entrySet())   // AMap.cons(items.first())
+                                        {
+                                        Map.Entry e = (Entry) o;
+                                        ret = ret.assoc(e.getKey(), e.getValue());
+                                        }
+                                break;
+                                }
+			else throw new IllegalArgumentException(String.format("No value supplied for key: %s", items.first()));
+			}
 		ret = ret.assoc(items.first(), RT.second(items));
 		}
 	return (PersistentHashMap) ret.persistent();
@@ -98,28 +109,6 @@ static public PersistentHashMap createWithCheck(ISeq items){
  */
 public static PersistentHashMap create(IPersistentMap meta, Object... init){
 	return create(init).withMeta(meta);
-}
-
-static public PersistentHashMap createWithOptionalMap(ISeq items){
-	ITransientMap ret = EMPTY.asTransient();
-	for(; items != null; items = items.next().next())
-		{
-		if(items.next() == null)
-                        {
-                        if(items.first() instanceof Map)
-                                {
-                                for(Object o : ((Map)items.first()).entrySet())
-                                        {
-                                        Map.Entry e = (Entry) o;
-                                        ret = ret.assoc(e.getKey(), e.getValue());
-                                        }
-                                break;
-                                }
-			else throw new IllegalArgumentException(String.format("No value supplied for key: %s", items.first()));
-			}
-		ret = ret.assoc(items.first(), RT.second(items));
-		}
-	return (PersistentHashMap) ret.persistent();
 }
 
 PersistentHashMap(int count, INode root, boolean hasNull, Object nullValue){
