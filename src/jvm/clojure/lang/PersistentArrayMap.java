@@ -76,6 +76,7 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
+// DEPRECATED - replaced by create(ISeq)
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	if ((init.length & 1) == 1)
                 throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
@@ -139,6 +140,27 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 		}
 	return new PersistentArrayMap(init);
 }
+
+static public PersistentArrayMap create(ISeq items){
+        IPersistentMap augmented = null;
+	ITransientMap ret = EMPTY.asTransient();
+	for(; items != null; items = items.next().next())
+		{
+		if(items.next() == null)
+                        {
+			APersistentMap target = (APersistentMap) ret.persistent();
+		        augmented = (IPersistentMap) target.cons(items.first());
+			break;
+			}
+		ret = ret.assoc(items.first(), RT.second(items));
+		}
+
+	if(augmented == null) augmented = (IPersistentMap) ret.persistent();
+
+	if(augmented instanceof PersistentArrayMap) return (PersistentArrayMap) augmented;
+	else return PersistentArrayMap.EMPTY;
+}
+
 /**
  * This ctor captures/aliases the passed array, so do not modify later
  *
