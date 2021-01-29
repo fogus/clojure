@@ -75,16 +75,8 @@ static public PersistentHashMap create(ISeq items){
 		{
 		if(items.next() == null)
                         {
-			    if(items.first() instanceof Map)  // != null
-                                {
-				    for(Object o : ((Map)items.first()).entrySet())   // AMap.cons(items.first())
-                                        {
-                                        Map.Entry e = (Entry) o;
-                                        ret = ret.assoc(e.getKey(), e.getValue());
-                                        }
-                                break;
-                                }
-			else throw new IllegalArgumentException(String.format("No value supplied for key: %s", items.first()));
+			APersistentMap augmented = (APersistentMap) ret.persistent();
+		        return (PersistentHashMap) augmented.cons(items.first());
 			}
 		ret = ret.assoc(items.first(), RT.second(items));
 		}
