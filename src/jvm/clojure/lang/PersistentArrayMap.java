@@ -76,7 +76,6 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
-// DEPRECATED - replaced by create(ISeq)
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	if ((init.length & 1) == 1)
                 throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
@@ -141,24 +140,36 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
+private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
+        ISeq items = trailing.seq();
+        int sz = items.count() * 2;
+        Object[] newKvs = new Object[sz];
+
+        for(int i=0; items != null; items = items.next(), i+=2)
+            {
+	    Object    o = items.first();
+	    Map.Entry e = (Entry) o;
+            newKvs[i]   = e.getKey();
+	    newKvs[i+1] = e.getValue();
+        }
+
+        Object[] result = Arrays.copyOf(seed, (seed.length-1) + newKvs.length);
+        System.arraycopy(newKvs, 0, result, (seed.length-1), newKvs.length);
+        return result;
+}
+
 static public PersistentArrayMap create(ISeq items){
-        IPersistentMap augmented = null;
-	ITransientMap ret = EMPTY.asTransient();
-	for(; items != null; items = items.next().next())
-		{
-		if(items.next() == null)
-                        {
-			APersistentMap target = (APersistentMap) ret.persistent();
-		        augmented = (IPersistentMap) target.cons(items.first());
-			break;
-			}
-		ret = ret.assoc(items.first(), RT.second(items));
-		}
+        Object[] init = RT.seqToArray(items);
+        boolean hasTrailing = false;
 
-	if(augmented == null) augmented = (IPersistentMap) ret.persistent();
+        if((init.length & 1) == 1) hasTrailing = true;
 
-	if(augmented instanceof PersistentArrayMap) return (PersistentArrayMap) augmented;
-	else return PersistentArrayMap.EMPTY;
+        if(!hasTrailing) return createAsIfByAssoc(init);
+
+        IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
+
+        init = growSeedArray(init, augment);
+        return createAsIfByAssoc(init);
 }
 
 /**
