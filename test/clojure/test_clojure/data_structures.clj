@@ -592,7 +592,14 @@
       ; (class (hash-map :a 1)) => clojure.lang.PersistentHashMap
       (keys (hash-map)) nil
       (keys (hash-map :a 1)) '(:a)
-      (diff (keys (hash-map :a 1 :b 2)) '(:a :b)) nil )   ; (keys (hash-map :a 1 :b 2)) '(:a :b)
+      (keys (hash-map :a 1 {:b 2})) '(:b :a)
+      (diff (keys (hash-map :a 1 :b 2)) '(:a :b)) nil     ; (keys (hash-map :a 1 :b 2)) '(:a :b)
+
+      ; (class (array-map :a 1)) => clojure.lang.PersistentArrayMap
+      (keys (array-map)) nil
+      (keys (array-map :a 1)) '(:a)
+      (keys (array-map :a 1 {:b 2})) '[:a :b]
+      (diff (keys (array-map :a 1 :b 2)) '(:a :b)) nil )   ; (keys (array-map :a 1 :b 2)) '(:a :b)
 
   (let [m {:a 1 :b 2}
         k (keys m)]
@@ -621,6 +628,7 @@
       ; (class (hash-map :a 1)) => clojure.lang.PersistentHashMap
       (vals (hash-map)) nil
       (vals (hash-map :a 1)) '(1)
+      (vals (hash-map :a 1 {:b 2})) '(2 1)
       (diff (vals (hash-map :a 1 :b 2)) '(1 2)) nil )   ; (vals (hash-map :a 1 :b 2)) '(1 2)
 
   (let [m {:a 1 :b 2}
