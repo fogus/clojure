@@ -74,9 +74,9 @@ static public PersistentHashMap create(ISeq items){
 	for(; items != null; items = items.next().next())
 		{
 		if(items.next() == null)
-                        {
+			{
 			APersistentMap augmented = (APersistentMap) ret.persistent();
-		        return (PersistentHashMap) augmented.cons(items.first());
+			return (PersistentHashMap) augmented.cons(items.first());
 			}
 		ret = ret.assoc(items.first(), RT.second(items));
 		}
