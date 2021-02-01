@@ -139,6 +139,36 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 		}
 	return new PersistentArrayMap(init);
 }
+
+private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
+	ISeq items = trailing.seq();
+	int sz = items.count() * 2;
+	Object[] newKvs = new Object[sz];
+
+	for(int i=0; items != null; items = items.next(), i+=2)
+		{
+		Object o = items.first();
+		Map.Entry e = (Entry) o;
+		newKvs[i] = e.getKey();
+		newKvs[i+1] = e.getValue();
+		}
+
+	Object[] result = Arrays.copyOf(seed, (seed.length-1) + newKvs.length);
+	System.arraycopy(newKvs, 0, result, (seed.length-1), newKvs.length);
+	return result;
+}
+
+static public PersistentArrayMap create(ISeq items){
+	Object[] init = RT.seqToArray(items);
+
+	if((init.length & 1) == 0) return createAsIfByAssoc(init);
+
+	IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
+
+	init = growSeedArray(init, augment);
+	return createAsIfByAssoc(init);
+}
+
 /**
  * This ctor captures/aliases the passed array, so do not modify later
  *
