@@ -160,11 +160,8 @@ private static Object[] growSeedArray(Object[] seed, IPersistentCollection trail
 
 static public PersistentArrayMap create(ISeq items){
         Object[] init = RT.seqToArray(items);
-        boolean hasTrailing = false;
 
-        if((init.length & 1) == 1) hasTrailing = true;
-
-        if(!hasTrailing) return createAsIfByAssoc(init);
+	if((init.length & 1) == 0) return createAsIfByAssoc(init);
 
         IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
 
