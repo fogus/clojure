@@ -148,19 +148,16 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 
 private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
 	ISeq items = trailing.seq();
-	int sz = items.count() * 2;
-	Object[] newKvs = new Object[sz];
+	int seedCount = seed.length - 1;
+	Object[] result = Arrays.copyOf(seed, seedCount + (trailing.count() * 2));
 
-	for(int i=0; items != null; items = items.next(), i+=2)
+	for(int i=seedCount; items != null; items = items.next(), i+=2)
 		{
-		Object o = items.first();
-		Map.Entry e = (Entry) o;
-		newKvs[i] = e.getKey();
-		newKvs[i+1] = e.getValue();
+		Map.Entry e = (Entry) items.first();
+		result[i] = e.getKey();
+		result[i+1] = e.getValue();
 		}
 
-	Object[] result = Arrays.copyOf(seed, (seed.length-1) + newKvs.length);
-	System.arraycopy(newKvs, 0, result, (seed.length-1), newKvs.length);
 	return result;
 }
 
