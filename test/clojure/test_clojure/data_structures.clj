@@ -731,7 +731,7 @@
          ai3 ao3
          ai4 ao4)))
 
-(deftest test-lifted-map-destructuring
+(deftest test-trailing-map-destructuring
   (let [sample-map {:a 1 :b 2}
         {:keys [a] :as m} (list sample-map)
         add  (fn [& {:keys [a b]}] (+ a b))

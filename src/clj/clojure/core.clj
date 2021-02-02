@@ -383,8 +383,8 @@
   Returns a new hash map with supplied mappings.  If any keys are
   equal, they are handled as if by repeated uses of assoc. If
   hash-map receives a single trailing element at the end of its
-  arguments then it will attempt to conj it into the resulting
-  map made from the given mappings."
+  argument list then it will attempt to add it to the resulting
+  map made from the prior given mappings."
   {:added "1.0"
    :static true}
   ([] {})
@@ -4370,8 +4370,8 @@
 (defn array-map
   "Constructs an array-map. If any keys are equal, they are handled as
   if by repeated uses of assoc. If array-map receives a single trailing
-  element at the end of its arguments then it will attempt to conj it
-  into the resulting map made from the given mappings."
+  element at the end of its argument list then it will attempt to add
+  it to the resulting map made from the prior given mappings."
   {:added "1.0"
    :static true}
   ([] (. clojure.lang.PersistentArrayMap EMPTY))
