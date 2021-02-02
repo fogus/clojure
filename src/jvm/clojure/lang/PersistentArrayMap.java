@@ -76,9 +76,7 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
-static public PersistentArrayMap createAsIfByAssoc(Object[] init){
-	if ((init.length & 1) == 1)
-                throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
+static private PersistentArrayMap constructArrayMapDirectly(Object[] init){
 	// If this looks like it is doing busy-work, it is because it
 	// is achieving these goals: O(n^2) run time like
 	// createWithCheck(), never modify init arg, and only
@@ -139,6 +137,41 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 		}
 	return new PersistentArrayMap(init);
 }
+
+// DEPRECATED - replaced by create(ISeq)
+static public PersistentArrayMap createAsIfByAssoc(Object[] init){
+	if ((init.length & 1) == 1)
+                throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
+
+	return constructArrayMapDirectly(init);
+}
+
+private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
+	ISeq items = trailing.seq();
+	int seedCount = seed.length - 1;
+	Object[] result = Arrays.copyOf(seed, seedCount + (items.count() * 2));
+
+	for(int i=seedCount; items != null; items = items.next(), i+=2)
+		{
+		Map.Entry e = (Entry) items.first();
+		result[i] = e.getKey();
+		result[i+1] = e.getValue();
+		}
+
+	return result;
+}
+
+static public PersistentArrayMap create(ISeq items){
+	Object[] init = RT.seqToArray(items);
+
+	if((init.length & 1) == 0) return constructArrayMapDirectly(init);
+
+	IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
+
+	init = growSeedArray(init, augment);
+	return constructArrayMapDirectly(init);
+}
+
 /**
  * This ctor captures/aliases the passed array, so do not modify later
  *
