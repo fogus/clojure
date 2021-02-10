@@ -74,7 +74,10 @@ static public PersistentHashMap create(ISeq items){
 	for(; items != null; items = items.next().next())
 		{
 		if(items.next() == null)
-			throw new IllegalArgumentException(String.format("No value supplied for key: %s", items.first()));
+			{
+			ITransientCollection augmented = ret.conj(items.first());
+			return (PersistentHashMap) augmented.persistent();
+			}
 		ret = ret.assoc(items.first(), RT.second(items));
 		}
 	return (PersistentHashMap) ret.persistent();

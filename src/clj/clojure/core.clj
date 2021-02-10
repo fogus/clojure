@@ -379,14 +379,18 @@
      (clojure.lang.LazilyPersistentVector/create coll))))
 
 (defn hash-map
-  "keyval => key val
-  Returns a new hash map with supplied mappings.  If any keys are
-  equal, they are handled as if by repeated uses of assoc."
+  "keyval => [key val]* conj-element?
+  When provided a single argument, returns it. Else returns a
+  new hash map with supplied keys and values, as if by repeated
+  use of 'assoc'. A single trailing conj-element will be added
+  to the returned map as if by 'conj'."
   {:added "1.0"
    :static true}
   ([] {})
   ([& keyvals]
-   (. clojure.lang.PersistentHashMap (create keyvals))))
+   (if (next keyvals)
+     (. clojure.lang.PersistentHashMap (create keyvals))
+     (first keyvals))))
 
 (defn hash-set
   "Returns a new hash set with supplied keys.  Any equal keys are
@@ -4419,7 +4423,7 @@
                            gmapseq (with-meta gmap {:tag 'clojure.lang.ISeq})
                            defaults (:or b)]
                        (loop [ret (-> bvec (conj gmap) (conj v)
-                                      (conj gmap) (conj `(if (seq? ~gmap) (clojure.lang.PersistentHashMap/create (seq ~gmapseq)) ~gmap))
+                                      (conj gmap) (conj `(if (seq? ~gmap) (apply hash-map (seq ~gmapseq)) ~gmap))
                                       ((fn [ret]
                                          (if (:as b)
                                            (conj ret (:as b) gmap)
