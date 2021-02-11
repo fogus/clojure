@@ -744,20 +744,17 @@
       (is (= 3 (add  :a 1 :b 2)))
       (is (= 3 (add  {:a 1 :b 2})))
       (is (= 13 (addn 10 :a 1 :b 2)))
-      (is (= 13 (addn 10 {:a 1 :b 2}))))
-    (testing "nested case"
-      (let [multiplayer-game-state
-            {:joe {:class "Ranger"
-                   :weapon "Longbow"
-                   :score 100}
-             :jane {:class "Knight"
-                    :weapon "Greatsword"
-                    :score 140}
-             :ryan {:class "Wizard"
-                    :weapon "Mystic Staff"
-                    :score 150}}
-            {{:keys [class weapon]} :joe} (list multiplayer-game-state)]
-        (is (= ["Ranger" "Longbow"] [class weapon]))))))
+      (is (= 13 (addn 10 {:a 1 :b 2})))
+      (is (= 103 ((partial addn 100) :a 1 {:b 2})))
+      (is (= 103 ((partial addn 100 :a 1) {:b 2})))
+      (is (= 107 ((partial addn 100 :a 1) {:a 5 :b 2}))))
+    (testing "built maps"
+      (let [{:as m1} (list :a 1 :b 2)
+            {:as m2} (list :a 1 :b 2 {:c 3})
+            {:as m3} (list :a 1 :b 2 {:a 0})]
+        (= m1 {:a 1 :b 2})
+        (= m2 {:a 1 :b 2 :c 3})
+        (= m3 {:a 0 :b 2})))))
 
 ;; *** Sets ***
 
