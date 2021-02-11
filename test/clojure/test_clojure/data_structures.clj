@@ -751,10 +751,16 @@
     (testing "built maps"
       (let [{:as m1} (list :a 1 :b 2)
             {:as m2} (list :a 1 :b 2 {:c 3})
-            {:as m3} (list :a 1 :b 2 {:a 0})]
+            {:as m3} (list :a 1 :b 2 {:a 0})
+            {:as m4} (list)
+            {:as m5} (list nil)
+            {:keys [a6] :as m6} (list nil)]
         (= m1 {:a 1 :b 2})
         (= m2 {:a 1 :b 2 :c 3})
-        (= m3 {:a 0 :b 2})))))
+        (= m3 {:a 0 :b 2})
+        (= m4 {})
+        (= m5 nil)
+        (= a6 nil)))))
 
 ;; *** Sets ***
 
