@@ -4421,7 +4421,7 @@
                        (loop [ret (-> bvec (conj gmap) (conj v)
                                       (conj gmap) (conj `(if (seq? ~gmap)
                                                            (if (next ~gmapseq) (clojure.lang.PersistentHashMap/create (seq ~gmapseq))
-                                                               (or (first ~gmapseq) clojure.lang.PersistentHashMap/EMPTY))
+                                                               (if (seq ~gmapseq) (first ~gmapseq) clojure.lang.PersistentHashMap/EMPTY))
                                                            ~gmap))
                                       ((fn [ret]
                                          (if (:as b)
@@ -4468,6 +4468,11 @@
     (if (every? symbol? (map first bents))
       bindings
       (reduce1 process-entry [] bents))))
+
+(defn seq->destructure-map [s]
+  (when (seq? s)
+    (if (next s) (clojure.lang.PersistentHashMap/create s)
+        (if (seq s) (first s) clojure.lang.PersistentHashMap/EMPTY))))
 
 (defmacro let
   "binding => binding-form init-expr

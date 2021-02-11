@@ -105,3 +105,16 @@
     (defn foo
       [{:keys [^String s]}]
       (.indexOf s "boo"))))
+
+(deftest test-seq->destructure-map
+  (let []
+    (testing "built maps"
+      (are [x y] (= x y)
+        :a (seq->destructure-map (list :a))
+        {:a 1} (seq->destructure-map (list {:a 1}))
+        {:foo 42} (meta (seq->destructure-map (list (with-meta {:a 1} {:foo 42}))))
+        {:a 1 :b 2} (seq->destructure-map (list :a 1 :b 2))
+        {:a 1 :b 2 :c 3} (seq->destructure-map (list :a 1 :b 2 {:c 3})) 
+        {:a 0 :b 2} (seq->destructure-map (list :a 1 :b 2 {:a 0}))
+        nil (seq->destructure-map (list nil))
+        {} (seq->destructure-map ())))))
