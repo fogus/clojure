@@ -79,6 +79,28 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	if ((init.length & 1) == 1)
                 throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
+
+	boolean duplicateKey = false;
+
+	for(int i=0;((i< init.length) && !duplicateKey);i += 2)
+		{
+		for(int j=0;j<i;j += 2)
+			{
+			if(equalKey(init[i],init[j]))
+				{
+				    duplicateKey = true;
+				    break;
+				}
+			}
+		}
+
+	if (duplicateKey)
+	    return createAsIfByAssoc2(init);
+	else
+	    return new PersistentArrayMap(init);
+}
+
+static public PersistentArrayMap createAsIfByAssoc2(Object[] init){
 	// If this looks like it is doing busy-work, it is because it
 	// is achieving these goals: O(n^2) run time like
 	// createWithCheck(), never modify init arg, and only
@@ -139,6 +161,7 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 		}
 	return new PersistentArrayMap(init);
 }
+
 /**
  * This ctor captures/aliases the passed array, so do not modify later
  *
