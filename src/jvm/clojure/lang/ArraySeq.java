@@ -19,6 +19,13 @@ public final Object[] array;
 final int i;
 //ISeq _rest;
 
+public Object[] toArray(){
+        int sz = this.array.length - i;
+        Object[] ret = new Object[sz];
+        System.arraycopy(this.array, i, ret, 0, sz);
+        return ret;
+}
+
 static public ArraySeq create(){
 	return null;
 }
