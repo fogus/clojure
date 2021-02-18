@@ -1330,3 +1330,13 @@
     (is (= (hash (->Rec 1 1)) (hash (assoc r :a 1))))
     (is (= (hash (->Rec 1 1)) (hash (dissoc r2 :c))))
     (is (= (hash (->Rec 1 1)) (hash (dissoc (assoc r :c 1) :c))))))
+
+(deftest singleton-map-in-destructure-context
+  (let [sample-map {:a 1 :b 2}
+        {:keys [a] :as m1} (list sample-map)
+        {:as mempty} (list)
+        {:as mnil} (list nil)]
+    (is (= m1 sample-map))
+    (is (= a 1))
+    (is (= {} mempty))
+    (is (= {} mnil))))
