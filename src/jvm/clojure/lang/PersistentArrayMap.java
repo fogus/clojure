@@ -77,9 +77,6 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 }
 
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
-	if ((init.length & 1) == 1)
-                throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
-
 	boolean duplicateKey = false;
 
 	for(int i=0;((i< init.length) && !duplicateKey);i += 2)
