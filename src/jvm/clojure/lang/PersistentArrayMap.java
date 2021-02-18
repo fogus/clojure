@@ -92,12 +92,12 @@ private static Object[] growSeedArray(Object[] seed, IPersistentCollection trail
 }
 
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
-        if((init.length & 1) == 0) return createAsIfByAssoc2(init);
+	if((init.length & 1) == 0) return createAsIfByAssoc2(init);
 
 	IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
 
-        init = growSeedArray(init, augment);
-        return createAsIfByAssoc2(init);
+	init = growSeedArray(init, augment);
+	return createAsIfByAssoc2(init);
 }
 
 static public PersistentArrayMap createAsIfByAssoc2(Object[] init){
