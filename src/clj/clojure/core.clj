@@ -4371,7 +4371,10 @@
    :static true}
   ([] (. clojure.lang.PersistentArrayMap EMPTY))
   ([& keyvals]
-     (clojure.lang.PersistentArrayMap/createAsIfByAssoc (to-array keyvals))))
+     (let [ary (to-array keyvals)]
+       (if (odd? (alength ary))
+         (throw (IllegalArgumentException. (str "No value supplied for key: " (last keyvals))))
+         (clojure.lang.PersistentArrayMap/createAsIfByAssoc ary)))))
 
 ;;redefine let and loop  with destructuring
 (defn destructure [bindings]

@@ -76,9 +76,31 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
+private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
+	ISeq extraKVs = trailing.seq();
+	int seedCount = seed.length - 1;
+	Object[] result = Arrays.copyOf(seed, seedCount + (trailing.count() * 2));
+
+	for(int i=seedCount; extraKVs != null; extraKVs = extraKVs.next(), i+=2)
+		{
+		Map.Entry e = (Entry) extraKVs.first();
+		result[i] = e.getKey();
+		result[i+1] = e.getValue();
+		}
+
+	return result;
+}
+
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
-	if ((init.length & 1) == 1)
-                throw new IllegalArgumentException(String.format("No value supplied for key: %s", init[init.length-1]));
+        if((init.length & 1) == 0) return createAsIfByAssoc2(init);
+
+	IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
+
+        init = growSeedArray(init, augment);
+        return createAsIfByAssoc2(init);
+}
+
+static public PersistentArrayMap createAsIfByAssoc2(Object[] init){
 	// If this looks like it is doing busy-work, it is because it
 	// is achieving these goals: O(n^2) run time like
 	// createWithCheck(), never modify init arg, and only
