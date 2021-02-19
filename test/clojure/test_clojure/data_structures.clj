@@ -1333,13 +1333,9 @@
 
 (deftest singleton-map-in-destructure-context
   (let [sample-map {:a 1 :b 2}
-        {:keys [a] :as m1} (list sample-map)
-        {:as mempty} (list)
-        {:as mnil} (list nil)]
+        {:keys [a] :as m1} (list sample-map)]
     (is (= m1 sample-map))
-    (is (= a 1))
-    (is (= {} mempty))
-    (is (= {} mnil))))
+    (is (= a 1))))
 
 (deftest trailing-map-destructuring
   (let [sample-map {:a 1 :b 2}
