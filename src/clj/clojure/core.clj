@@ -4423,9 +4423,9 @@
                            defaults (:or b)]
                        (loop [ret (-> bvec (conj gmap) (conj v)
                                       (conj gmap) (conj `(if (seq? ~gmap)
-                                                           (if (or (next ~gmapseq) (not (seq ~gmapseq)))
+                                                           (if (next ~gmapseq)
                                                              (clojure.lang.PersistentArrayMap/createAsIfByAssoc (to-array ~gmapseq))
-                                                             (first ~gmapseq))
+                                                             (if (seq ~gmapseq) (first ~gmapseq) clojure.lang.PersistentArrayMap/EMPTY))
                                                            ~gmap))
                                       ((fn [ret]
                                          (if (:as b)
