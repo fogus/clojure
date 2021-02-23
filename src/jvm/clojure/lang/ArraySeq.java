@@ -143,10 +143,10 @@ public int lastIndexOf(Object o) {
 }
 
 public Object[] toArray(){
-        int sz = this.array.length - this.i;
-        Object[] ret = new Object[sz];
-        System.arraycopy(this.array, i, ret, 0, sz);
-        return ret;
+	int sz = this.array.length - this.i;
+	Object[] ret = new Object[sz];
+	System.arraycopy(this.array, i, ret, 0, sz);
+	return ret;
 }
 
 //////////////////////////////////// specialized primitive versions ///////////////////////////////
