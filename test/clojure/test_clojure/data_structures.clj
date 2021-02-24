@@ -1357,4 +1357,7 @@
         (= m1 {:a 1 :b 2})
         (= m2 {:a 1 :b 2 :c 3})
         (= m3 {:a 0 :b 2})
+        (= m1 (seq-to-map-for-destructuring (list :a 1 :b 2)))
+        (= m2 (seq-to-map-for-destructuring (list :a 1 :b 2 {:c 3})))
+        (= m3 (seq-to-map-for-destructuring (list :a 1 :b 2 {:a 0})))
         (= a4 nil)))))
