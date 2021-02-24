@@ -76,6 +76,11 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
+/**
+ * <p>This method attempts to find resue the given array as the basis for an array map as quickly as possible.</p>
+ *
+ * <p>If a trailing element exists in the array or it contains duplicate keys then it delegates to the complex path.</p>
+ **/
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	boolean complexPath, hasTrailing;
 	complexPath = hasTrailing = ((init.length & 1) == 1);
@@ -112,7 +117,14 @@ private static Object[] growSeedArray(Object[] seed, IPersistentCollection trail
 	return result;
 }
 
-static public PersistentArrayMap createAsIfByAssocComplexPath(Object[] init, boolean hasTrailing){
+/**
+ * <p>This method handles the default case of an array containing alternating key/value pairs.</p>
+ * <p>It will reallocate a smaller init array if duplicate keys are found.</p>
+ *
+ * <p>If a trailing element is found then will attempt to add it to the resulting map as if by conj.</p>
+ * <p>No guarantees about the order of the keys in the trailing element are made.</p>
+ **/
+private static PersistentArrayMap createAsIfByAssocComplexPath(Object[] init, boolean hasTrailing){
 	if(hasTrailing)
 		{
 		IPersistentCollection trailing = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
