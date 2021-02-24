@@ -76,21 +76,6 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
-private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
-	ISeq extraKVs = trailing.seq();
-	int seedCount = seed.length - 1;
-	Object[] result = Arrays.copyOf(seed, seedCount + (trailing.count() * 2));
-
-	for(int i=seedCount; extraKVs != null; extraKVs = extraKVs.next(), i+=2)
-		{
-		Map.Entry e = (Entry) extraKVs.first();
-		result[i] = e.getKey();
-		result[i+1] = e.getValue();
-		}
-
-	return result;
-}
-
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	if((init.length & 1) == 1) return createAsIfByAssoc2(init, true);
 
@@ -113,11 +98,26 @@ static public PersistentArrayMap createAsIfByAssoc(Object[] init){
 	return new PersistentArrayMap(init);
 }
 
+private static Object[] growSeedArray(Object[] seed, IPersistentCollection trailing){
+	ISeq extraKVs = trailing.seq();
+	int seedCount = seed.length - 1;
+	Object[] result = Arrays.copyOf(seed, seedCount + (trailing.count() * 2));
+
+	for(int i=seedCount; extraKVs != null; extraKVs = extraKVs.next(), i+=2)
+		{
+		Map.Entry e = (Entry) extraKVs.first();
+		result[i] = e.getKey();
+		result[i+1] = e.getValue();
+		}
+
+	return result;
+}
+
 static public PersistentArrayMap createAsIfByAssoc2(Object[] init, boolean hasTrailing){
 	if(hasTrailing)
 		{
-		IPersistentCollection augment = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
-		init = growSeedArray(init, augment);
+		IPersistentCollection trailing = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
+		init = growSeedArray(init, trailing);
 		}
 
 	// If this looks like it is doing busy-work, it is because it
