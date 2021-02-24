@@ -77,23 +77,22 @@ static public PersistentArrayMap createWithCheck(Object[] init){
 }
 
 static public PersistentArrayMap createAsIfByAssoc(Object[] init){
-	if((init.length & 1) == 1) return createAsIfByAssoc2(init, true);
+	boolean complexPath, hasTrailing;
+	complexPath = hasTrailing = ((init.length & 1) == 1);
 
-	boolean duplicateKey = false;
-
-	for(int i=0;((i< init.length) && !duplicateKey);i += 2)
+	for(int i=0;((i< init.length) && !complexPath);i += 2)
 		{
 		for(int j=0;j<i;j += 2)
 			{
 			if(equalKey(init[i],init[j]))
 				{
-				    duplicateKey = true;
+				    complexPath = true;
 				    break;
 				}
 			}
 		}
 
-	if (duplicateKey) return createAsIfByAssoc2(init, false);
+	if (complexPath) return createAsIfByAssocComplexPath(init, hasTrailing);
 
 	return new PersistentArrayMap(init);
 }
@@ -113,7 +112,7 @@ private static Object[] growSeedArray(Object[] seed, IPersistentCollection trail
 	return result;
 }
 
-static public PersistentArrayMap createAsIfByAssoc2(Object[] init, boolean hasTrailing){
+static public PersistentArrayMap createAsIfByAssocComplexPath(Object[] init, boolean hasTrailing){
 	if(hasTrailing)
 		{
 		IPersistentCollection trailing = PersistentArrayMap.EMPTY.cons(init[init.length-1]);
