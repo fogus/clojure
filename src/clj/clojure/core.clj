@@ -4376,7 +4376,10 @@
          (throw (IllegalArgumentException. (str "No value supplied for key: " (last keyvals))))
          (clojure.lang.PersistentArrayMap/createAsIfByAssoc ary)))))
 
-(defn seq-to-map-for-destructuring [s]
+(defn seq-to-map-for-destructuring
+  "Builds a map from a seq as described in
+  https://clojure.org/reference/special_forms#keyword-arguments"
+  [s]
   (if (next s)
     (clojure.lang.PersistentArrayMap/createAsIfByAssoc (to-array s))
     (if (seq s) (first s) clojure.lang.PersistentArrayMap/EMPTY)))
